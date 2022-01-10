@@ -1,7 +1,7 @@
-FROM node:14.5.0
-
-ADD start.sh /start.sh
-RUN chmod 755 /start.sh
-CMD ["/start.sh"]
-
-
+FROM node:12.22-slim
+WORKDIR /sample-service
+COPY api/package.json ./
+RUN npm install
+COPY api/ /sample-service
+EXPOSE 8123
+CMD [ "node", "app.js" ]
