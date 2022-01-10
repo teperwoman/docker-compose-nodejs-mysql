@@ -70,6 +70,9 @@ jobs:
           kubeconfig: ${{ secrets.KUBECONFIG }}
         id: setcontext
 
+      - uses: prepor/action-aws-iam-authenticator@master
+      - run: aws-iam-authenticator version
+
        #changer le nom de yaml et le nom de l'image et du compte dockerhub
       - uses: Azure/k8s-deploy@v1.3
         with:
