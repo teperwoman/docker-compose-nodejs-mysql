@@ -24,10 +24,43 @@ spec:
       containers:
       - name: sample-service-nodejs
         image: tftest/sample_service_nodejs:latest
+        env:
+          - name: DATABASE_HOST
+            value: mysql-db
         ports:
         - containerPort: 8123
 
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-db
+  labels:
+    app: mysql-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-db
+  template:
+    metadata:
+      labels:
+        app: mysql-db
+    spec:
+      containers:
+      - name: mysql-db
+        image: mysql:8.0.19
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: "123"
+          - name: MYSQL_DATABASE
+            value: CHIRINOS
+          - name: MYSQL_USER
+            value: users_service
+        ports:
+        - containerPort: 3306
+---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -41,3 +74,16 @@ spec:
   clusterIP: None
   selector:
     app: sample-service-nodejs
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-db
+spec:
+  selector:
+    app: mysql-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
