@@ -1,0 +1,43 @@
+
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: my-nodejs-project
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample_service_nodejs
+  labels:
+    app: sample_service_nodejs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample_service_nodejs
+  template:
+    metadata:
+      labels:
+        app: sample_service_nodejs
+    spec:
+      containers:
+      - name: sample_service_nodejs
+        image: tftest/sample_service_nodejs:latest
+        ports:
+        - containerPort: 8123
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample_service_nodejs
+  labels:
+    name: sample_service_nodejs
+spec:
+  ports:
+  - port: 8123
+    targetPort: 8123
+  clusterIP: None
+  selector:
+    app: sample_service_nodejs
